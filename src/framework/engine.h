@@ -6,6 +6,7 @@
 #include <iostream>
 #include <GLFW/glfw3.h>
 #include <aubio.h>
+#include <cmath>
 
 
 #include "shaderManager.h"

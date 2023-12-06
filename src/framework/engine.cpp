@@ -1,10 +1,9 @@
 #include "engine.h"
+#include <cmath>
+
 
 const color WHITE(1, 1, 1);
-const color BLACK(0, 0, 0);
-const color BLUE(0, 0, 1);
-const color YELLOW(1, 1, 0);
-const color BUBBLE(0.7, 0.8, 0.8);
+
 
 Engine::Engine() {
     this->initWindow();
@@ -61,32 +60,37 @@ void Engine::initShaders() {
 void Engine::initShapes() {
 
     int hop_size = 128;
-    int samplerate = 150;
-    vector <float> ampVec;
+    int samplerate = 8000;
     uint_t hopSize = 256;  // Adjust as needed
-    fvec_t* buffer = new_fvec(hopSize / 2);
-    aubio_source_t* source = new_aubio_source("../res/Music_wav/Rooney.wav", samplerate, hop_size);
+    fvec_t *buffer = new_fvec(hopSize / 2);
+    aubio_source_t *source = new_aubio_source(
+            "/Users/carolrooney/CLionProjects/Final-Project-Cmrooney/res/music_wav/06 songs for women.wav", samplerate,
+            hop_size);
     if (!source) {
         std::cerr << "Error opening the audio file." << std::endl;
     }
+
+
     cout << "aubio working" << endl;
+    float barWidth = 0.0f;  // Use float for positioning accuracy
+    float barSpacing = 0.1f;  // Adjust spacing between bars
     do {
         aubio_source_do(source, buffer, &hopSize);
-
-        for (uint_t i = 0; i < hopSize / 2; ++i) {
-            float amplitude = buffer->data[i];
-            ampVec.push_back(amplitude);
-        }
-        for (int i = 0; i < ampVec.size(); i++) {
-            float barWidth = 0.0f;  // Use float for positioning accuracy
-            float barSpacing = 0.5f;  // Adjust spacing between bars
-
-            while (barWidth < WIDTH) {
-                float barHeight = ampVec[i];  // Use amplitude as the height
-                vec2 barSize = {5.0f, barHeight};
-                soundbar.push_back(std::make_unique<Rect>(
-                        shapeShader, vec2(barWidth, 0.0f), barSize, WHITE));
-                barWidth += barSize.x + barSpacing;
+        for (int i = 0; i < hopSize / 2; ++i) {
+            if (i % 400 == 0) {
+                float amplitude = buffer->data[i];
+                float pitch = buffer->data[i];
+                if (amplitude !=0) {
+                    float barHeight = fabs((amplitude * HEIGHT));
+                    vec2 barSize = {5.0f, barHeight};
+                    float color = pitch;
+                    float red = pitch;
+                    float blue = (1.0f - pitch);
+                    struct color COLOR(red, 0, blue);
+                    soundbar.push_back(std::make_unique<Rect>(
+                            shapeShader, vec2(barWidth, HEIGHT / 2), barSize, COLOR));
+                    barWidth += barSize.x + barSpacing;
+                }
             }
         }
     } while (hopSize != 0);
@@ -94,7 +98,11 @@ void Engine::initShapes() {
     aubio_cleanup();
     cout << "aubio cleaned up" << endl;
 
+
 }
+
+
+
 
 void Engine::processInput() {
     glfwPollEvents();
@@ -132,14 +140,15 @@ void Engine::update() {
 
 }
 void Engine::render() {
-    glClearColor(BLACK.red, BLACK.green, BLACK.blue, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    //glClearColor(BLACK.red, BLACK.green, BLACK.blue, 1.0f);
+    //glClear(GL_COLOR_BUFFER_BIT);
 
     // Set shader to use for all shapes
     shapeShader.use();
-    for (auto &s : soundbar) {
-        s->setUniforms();
+
+    for (const unique_ptr<Rect> &s : soundbar) {
         s->draw();
+        s->setUniforms();
     }
     glfwSwapBuffers(window);
 }
