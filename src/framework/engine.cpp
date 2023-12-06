@@ -77,7 +77,7 @@ void Engine::initShapes() {
     do {
         aubio_source_do(source, buffer, &hopSize);
         for (int i = 0; i < hopSize / 2; ++i) {
-            if (i % 400 == 0) {
+            if (i % 150 == 0) {
                 float amplitude = buffer->data[i];
                 float pitch = buffer->data[i];
                 if (amplitude !=0) {
