@@ -5,6 +5,8 @@
 #include <memory>
 #include <iostream>
 #include <GLFW/glfw3.h>
+#include <aubio.h>
+
 
 #include "shaderManager.h"
 #include "../shapes/circle.h"
@@ -23,21 +25,19 @@ class Engine {
         GLFWwindow* window{};
 
         /// @brief The width and height of the window.
-        const unsigned int WIDTH = 800, HEIGHT = 600; // Window dimensions
+        const unsigned int WIDTH = 800, HEIGHT = 800; // Window dimensions
+        //bool keys[1024];
 
-        /// @brief Responsible for loading and storing all the shaders used in the project.
+
+    /// @brief Responsible for loading and storing all the shaders used in the project.
         /// @details Initialized in initShaders()
         unique_ptr<ShaderManager> shaderManager;
+        Shader shapeShader;
 
         // Shapes
-        unique_ptr<Shape> ball;
-        unique_ptr<Shape> bubble;
-        unique_ptr<Shape> sun;
-        vector<unique_ptr<Shape>> eye;
-        vector<unique_ptr<Shape>> snow;
 
-        // Shaders
-        Shader shapeShader;
+        vector <unique_ptr<Rect>> soundbar;
+
 
         double mouseX, mouseY;
 
