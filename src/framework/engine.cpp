@@ -64,13 +64,10 @@ void Engine::initShaders() {
 }
 
 void Engine::initShapes(string songChoice) {
-    screen = choose;
-    const char *choice = songChoice.c_str();
-
+    int hop_size = 64;
     int samplerate = 8000;
     uint_t sample_rate = 8000;
-    uint_t hopSize = 256;  // Adjust as needed
-    aubio_source_t *source = new_aubio_source(choice, sample_rate, hopSize);
+    uint_t hopSize = 128;  // Adjust as needed
     fvec_t *buffer = new_fvec(hopSize / 2);
     cvec_t *spectrum = new_cvec(512);
     aubio_pitch_t *o = new_aubio_pitch("yinfast", 256, 128, samplerate);
@@ -78,7 +75,13 @@ void Engine::initShapes(string songChoice) {
     fvec_t *pitchvec = new_fvec(hopSize/2);
     fvec_t *tempoVec = new_fvec(hopSize/2);
     uint_t read = 0;
-
+    float bpm = 0;
+    float timeElapsed = 0.0f;
+    float pulseSpeed = bpm / 60.0f;
+    float yScale =1;
+    screen = choose;
+    const char *choice = songChoice.c_str();
+    aubio_source_t *source = new_aubio_source(choice, sample_rate, hopSize);
     if (!source) {
         std::cerr << "Error opening the audio file." << std::endl;
     }
@@ -148,24 +151,27 @@ void Engine::processInput() {
 
             if (keys[GLFW_KEY_1]) {
                 songChoice = "/Users/carolrooney/CLionProjects/Final-Project-Cmrooney/res/music_wav/03 novacane.wav";
-                //const char_t *choiceChar = songChoice.c_str();
                 initShapes(songChoice);
                 screen = wave;
             }
             if (keys[GLFW_KEY_2]) {
                 songChoice = "/Users/carolrooney/CLionProjects/Final-Project-Cmrooney/res/music_wav/02 strawberry swing.wav";
+                initShapes(songChoice);
                 screen = wave;
             }
             if (keys[GLFW_KEY_3]) {
                 songChoice = "/Users/carolrooney/CLionProjects/Final-Project-Cmrooney/res/music_wav/07 - Day Away [Prod Brain Kennedy].wav";
+                initShapes(songChoice);
                 screen = wave;
             }
             if (keys[GLFW_KEY_4]) {
                 songChoice = "/Users/carolrooney/CLionProjects/Final-Project-Cmrooney/res/music_wav/14 nature feels.wav";
+                initShapes(songChoice);
                 screen = wave;
             }
             if (keys[GLFW_KEY_5]) {
                 songChoice = "/Users/carolrooney/CLionProjects/Final-Project-Cmrooney/res/music_wav/64 - When Im Done (Prod Midi Mafia).wav";
+                initShapes(songChoice);
                 screen = wave;
             }
         }
@@ -185,10 +191,25 @@ void Engine::render() {
     shapeShader.use();
     switch (screen) {
         case choose: {
-            string message = "Choose one of My Top 5 to view the waveform";
-            this->fontRenderer->renderText(message, 0,700, 1, vec3{1, 1, 1});
-            string choices = "1. Novicane \n 2. Strawberry Swing \n 3. Day Away \n 4. Nature Feels \n 5. When I'm Done";
-            this->fontRenderer->renderText(choices, 0, 500, 1, vec3{1, 1, 1});
+            string message1 = "Choose one of My Top 5 songs";
+            string message2 = "to view the waveform";
+            string message3 = "press the number!!!";
+            this->fontRenderer->renderText(message1, 0,700, 1, vec3{1, 1, 1});
+            this->fontRenderer->renderText(message2, 0,(700 - message1.size()-12), 1, vec3{1, 1, 1});
+            this->fontRenderer->renderText(message3, 0,(700 - message1.size()-24), 1, vec3{1, 1, 1});
+            string choice1 = "1. Novicane";
+            string choice2 = "2. Strawberry Swing";
+            string choice3 = "3. Day Away";
+            string choice4 = "4. Nature Feels";
+            string choice5 = "5. When I'm Done";
+            this->fontRenderer->renderText(choice1, 0, 500, 1, vec3{1, 1, 1});
+            this->fontRenderer->renderText(choice2, 0, (500- choice1.size()-24), 1, vec3{1, 1, 1});
+            this->fontRenderer->renderText(choice3, 0, ((500- choice1.size()-choice2.size())-48), 1, vec3{1, 1, 1});
+            this->fontRenderer->renderText(choice4, 0, ((500- choice1.size()-choice2.size()-choice3.size())-72), 1, vec3{1, 1, 1});
+            this->fontRenderer->renderText(choice5, 0, ((500- choice1.size()-choice2.size()-choice3.size()-choice4.size())-96), 1, vec3{1, 1, 1});
+
+
+
             break;
         }
         case wave: {
