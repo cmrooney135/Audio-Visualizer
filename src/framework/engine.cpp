@@ -1,5 +1,9 @@
 #include "engine.h"
 #include <cmath>
+#include <cstdlib>
+#include <string>
+
+
 
 
 
@@ -64,6 +68,8 @@ void Engine::initShaders() {
 }
 
 void Engine::initShapes(string songChoice) {
+    const char* command = ("afplay " + songChoice).c_str();
+    system(command);
     int hop_size = 64;
     int samplerate = 8000;
     uint_t sample_rate = 8000;
@@ -93,6 +99,7 @@ void Engine::initShapes(string songChoice) {
         aubio_source_do(source, buffer, &hopSize);
         aubio_pitch_do(o, buffer, pitchvec);
         aubio_tempo_do(tempo, inputBuffer, tempoVec);
+
         for (int i = 0; i < hopSize / 2; ++i) {
             if (i % 150 == 0) {
                 float amplitude = buffer->data[i];
@@ -147,8 +154,6 @@ void Engine::processInput() {
 
     if (screen == choose) {
         string songChoice;
-
-
             if (keys[GLFW_KEY_1]) {
                 songChoice = "/Users/carolrooney/CLionProjects/Final-Project-Cmrooney/res/music_wav/03 novacane.wav";
                 initShapes(songChoice);
@@ -174,7 +179,10 @@ void Engine::processInput() {
                 initShapes(songChoice);
                 screen = wave;
             }
+
         }
+
+
     }
 
 void Engine::update() {
@@ -217,6 +225,8 @@ void Engine::render() {
                 s->draw();
                 s->setUniforms();
             }
+
+
 
         }
 

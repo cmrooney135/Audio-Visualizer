@@ -13,4 +13,8 @@ that converts mp3 files to .wav!
 I have many other songs im not putting on Git so I know it works for ALL mp3 files. 
 I wanted to include a movement with BPM being extracted but no dice. The frequency domain is terrible to deal with in C++.
 Unfortunately this is not a real time audio visualizer :( If i were to recreate this project I would use a newer, more reasonable 
-and more accessable audio analysis library like port audio. 
+and more accessable audio analysis library like portaudio. 
+
+I didnt add any user input validation but it just wont work if you press anything besides 1-5 so. 
+Also my top 5 are all frank ocean songs sorry about it its the easiest file to access in my computer. 
+thanks for listening (???)
