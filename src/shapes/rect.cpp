@@ -43,3 +43,4 @@ float Rect::getLeft() const        { return pos.x - (size.x / 2); }
 float Rect::getRight() const       { return pos.x + (size.x / 2); }
 float Rect::getTop() const         { return pos.y + (size.y / 2); }
 float Rect::getBottom() const      { return pos.y - (size.y / 2); }
+void Rect::setScale(const glm::vec2 &newScale) {scale = newScale;}

@@ -13,6 +13,8 @@
 #include "../shapes/circle.h"
 #include "../shapes/rect.h"
 #include "../shapes/shape.h"
+#include "fontRenderer.h"
+
 
 using std::vector, std::unique_ptr, std::make_unique, glm::ortho, glm::mat4, glm::vec3, glm::vec4;
 
@@ -27,20 +29,23 @@ class Engine {
 
         /// @brief The width and height of the window.
         const unsigned int WIDTH = 800, HEIGHT = 800; // Window dimensions
-        //bool keys[1024];
+        bool keys[1024];
 
 
     /// @brief Responsible for loading and storing all the shaders used in the project.
         /// @details Initialized in initShaders()
         unique_ptr<ShaderManager> shaderManager;
         Shader shapeShader;
+        Shader textShader;
 
-        // Shapes
 
+    // Shapes
         vector <unique_ptr<Rect>> soundbar;
+        unique_ptr<FontRenderer> fontRenderer;
 
 
-        double mouseX, mouseY;
+
+    double mouseX, mouseY;
 
     public:
         /// @brief Constructor for the Engine class.

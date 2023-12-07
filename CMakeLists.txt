@@ -25,9 +25,21 @@ option(GLFW_BUILD_DOCS ON)
 option(GLFW_BUILD_EXAMPLES OFF)
 option(GLFW_BUILD_TESTS ON)
 
+
+# non-needed features of freetype
+option(FT_DISABLE_ZLIB ON)
+option(FT_DISABLE_BZIP2 ON)
+option(FT_DISABLE_PNG ON)
+option(FT_DISABLE_HARFBUZZ ON)
+option(FT_DISABLE_BROTLI ON)
+option(FT_DISABLE_GZIP ON)
+option(FT_DISABLE_LZMA ON)
+
 # Add subdirectories
 add_subdirectory(lib/glfw)
 add_subdirectory(lib/glm)
+add_subdirectory(lib/freetype)
+
 
 # Set compiler flags based on compiler
 if(MSVC)
@@ -45,6 +57,7 @@ endif()
 # Set include directories
 include_directories(lib/glfw/include
         lib/glad/include
+        lib/freetype/include
         lib/glm
         lib/aubio/src)
 
@@ -69,6 +82,6 @@ add_executable(${PROJECT_NAME} ${PROJECT_SOURCES} ${PROJECT_HEADERS}
         ${PROJECT_SHADERS} ${PROJECT_CONFIGS}
         ${VENDORS_SOURCES})
 
-target_link_libraries(${PROJECT_NAME} glfw ${PROJECT_SOURCE_DIR}/lib/aubio/build/src/libaubio.dylib)
+target_link_libraries(${PROJECT_NAME} freetype glfw ${PROJECT_SOURCE_DIR}/lib/aubio/build/src/libaubio.dylib)
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)

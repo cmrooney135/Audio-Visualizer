@@ -11,6 +11,7 @@ class Rect : public Shape {
 private:
     /// @brief Initializes the vertices and indices of the square
     void initVectors();
+    vec2 scale;
 public:
     /// @brief Construct a new Square object
     /// @details This constructor will call the InitRenderData function.
@@ -38,6 +39,7 @@ public:
     float getRight() const override;
     float getTop() const override;
     float getBottom() const override;
+    void setScale(const vec2& newScale);
 };
 
 
