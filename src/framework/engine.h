@@ -28,7 +28,7 @@ class Engine {
         GLFWwindow* window{};
 
         /// @brief The width and height of the window.
-        const unsigned int WIDTH = 800, HEIGHT = 800; // Window dimensions
+        const unsigned int WIDTH = 1000, HEIGHT = 800; // Window dimensions
         bool keys[1024];
 
 
@@ -64,7 +64,7 @@ class Engine {
         void initShaders();
 
         /// @brief Initializes the shapes to be rendered.
-        void initShapes();
+        void initShapes(string songChoice);
 
         /// @brief Processes input from the user.
         /// @details (e.g. keyboard input, mouse input, etc.)

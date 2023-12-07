@@ -52,7 +52,7 @@ class FontRenderer {
         /**
          * @brief The projection matrix
          */
-        glm::mat4 projection = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f);
+        glm::mat4 projection = glm::ortho(0.0f, 800.0f, 0.0f, 800.0f);
 
         /**
          * @brief A set of character structs mapped to their ASCII character representations

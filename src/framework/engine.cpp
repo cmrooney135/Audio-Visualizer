@@ -10,7 +10,7 @@ state screen;
 Engine::Engine() {
     this->initWindow();
     this->initShaders();
-    this->initShapes();
+    //this->initShapes();
 }
 
 Engine::~Engine() {}
@@ -63,15 +63,14 @@ void Engine::initShaders() {
     shapeShader.use().setMatrix4("projection", this->PROJECTION);
 }
 
-void Engine::initShapes() {
-    //menu
+void Engine::initShapes(string songChoice) {
+    screen = choose;
+    const char *choice = songChoice.c_str();
 
-
-
-    int hop_size = 64;
     int samplerate = 8000;
     uint_t sample_rate = 8000;
-    uint_t hopSize = 128;  // Adjust as needed
+    uint_t hopSize = 256;  // Adjust as needed
+    aubio_source_t *source = new_aubio_source(choice, sample_rate, hopSize);
     fvec_t *buffer = new_fvec(hopSize / 2);
     cvec_t *spectrum = new_cvec(512);
     aubio_pitch_t *o = new_aubio_pitch("yinfast", 256, 128, samplerate);
@@ -79,17 +78,6 @@ void Engine::initShapes() {
     fvec_t *pitchvec = new_fvec(hopSize/2);
     fvec_t *tempoVec = new_fvec(hopSize/2);
     uint_t read = 0;
-    float bpm = 0;
-    float timeElapsed = 0.0f;
-    float pulseSpeed = bpm / 60.0f;
-    float yScale =1;
-
-
-
-
-    aubio_source_t *source = new_aubio_source(
-            "/Users/carolrooney/CLionProjects/Final-Project-Cmrooney/res/music_wav/06 songs for women.wav", samplerate,
-            hop_size);
 
     if (!source) {
         std::cerr << "Error opening the audio file." << std::endl;
@@ -102,12 +90,11 @@ void Engine::initShapes() {
         aubio_source_do(source, buffer, &hopSize);
         aubio_pitch_do(o, buffer, pitchvec);
         aubio_tempo_do(tempo, inputBuffer, tempoVec);
-        bpm = aubio_tempo_get_bpm(tempo);
         for (int i = 0; i < hopSize / 2; ++i) {
             if (i % 150 == 0) {
                 float amplitude = buffer->data[i];
                 float pitch = pitchvec->data[i];
-                if ((amplitude != 0) && (pitch != 0) && bpm != 0) {
+                if ((amplitude != 0) && (pitch != 0)) {
                     float barHeight = fabs((amplitude * HEIGHT));
                     vec2 barSize = {5.0f, barHeight};
                     pitch = pitch / 1000;
@@ -122,7 +109,6 @@ void Engine::initShapes() {
                 del_fvec(inputBuffer);
             }
         }
-        timeElapsed+=deltaTime;
     } while (hopSize != 0);
     del_aubio_source(source);
     del_fvec(buffer);
@@ -158,36 +144,33 @@ void Engine::processInput() {
 
     if (screen == choose) {
         string songChoice;
-        bool choice = false;
-        while (!choice) {
+
+
             if (keys[GLFW_KEY_1]) {
                 songChoice = "/Users/carolrooney/CLionProjects/Final-Project-Cmrooney/res/music_wav/03 novacane.wav";
-                choice = true;
+                //const char_t *choiceChar = songChoice.c_str();
+                initShapes(songChoice);
                 screen = wave;
             }
             if (keys[GLFW_KEY_2]) {
                 songChoice = "/Users/carolrooney/CLionProjects/Final-Project-Cmrooney/res/music_wav/02 strawberry swing.wav";
-                choice = true;
                 screen = wave;
             }
             if (keys[GLFW_KEY_3]) {
                 songChoice = "/Users/carolrooney/CLionProjects/Final-Project-Cmrooney/res/music_wav/07 - Day Away [Prod Brain Kennedy].wav";
-                choice = true;
                 screen = wave;
             }
             if (keys[GLFW_KEY_4]) {
                 songChoice = "/Users/carolrooney/CLionProjects/Final-Project-Cmrooney/res/music_wav/14 nature feels.wav";
-                choice = true;
                 screen = wave;
             }
             if (keys[GLFW_KEY_5]) {
                 songChoice = "/Users/carolrooney/CLionProjects/Final-Project-Cmrooney/res/music_wav/64 - When Im Done (Prod Midi Mafia).wav";
-                choice = true;
                 screen = wave;
             }
         }
     }
-}
+
 void Engine::update() {
     // Calculate delta time
     float currentFrame = glfwGetTime();
@@ -196,12 +179,16 @@ void Engine::update() {
 
 }
 void Engine::render() {
+    glClearColor(0, 0, 0, 1);
+    glClear(GL_COLOR_BUFFER_BIT);
+    textShader.use();
+    shapeShader.use();
     switch (screen) {
         case choose: {
             string message = "Choose one of My Top 5 to view the waveform";
-            this->fontRenderer->renderText(message, WIDTH/2 - (12 * message.length()), HEIGHT/4, 1, vec3{1, 1, 1});
+            this->fontRenderer->renderText(message, 0,700, 1, vec3{1, 1, 1});
             string choices = "1. Novicane \n 2. Strawberry Swing \n 3. Day Away \n 4. Nature Feels \n 5. When I'm Done";
-            this->fontRenderer->renderText(choices, WIDTH/2 - (12 * choices.length()), (3 *HEIGHT/4), 1, vec3{1, 1, 1});
+            this->fontRenderer->renderText(choices, 0, 500, 1, vec3{1, 1, 1});
             break;
         }
         case wave: {
