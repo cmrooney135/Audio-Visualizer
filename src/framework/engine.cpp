@@ -61,14 +61,19 @@ void Engine::initShapes() {
 
     int hop_size = 128;
     int samplerate = 8000;
+    uint_t sample_rate = 8000;
     uint_t hopSize = 256;  // Adjust as needed
+    uint_t buffSize = hopSize * 2;
     fvec_t *buffer = new_fvec(hopSize / 2);
+
     aubio_source_t *source = new_aubio_source(
             "/Users/carolrooney/CLionProjects/Final-Project-Cmrooney/res/music_wav/06 songs for women.wav", samplerate,
             hop_size);
     if (!source) {
         std::cerr << "Error opening the audio file." << std::endl;
     }
+    aubio_pitch_t *pitch = new_aubio_pitch("yin", buffSize, hopSize, samplerate);
+    fvec_t *pitch_out;
 
 
     cout << "aubio working" << endl;
@@ -79,7 +84,8 @@ void Engine::initShapes() {
         for (int i = 0; i < hopSize / 2; ++i) {
             if (i % 150 == 0) {
                 float amplitude = buffer->data[i];
-                float pitch = buffer->data[i];
+                float pitch = buffer -> data[i];
+
                 if (amplitude !=0) {
                     float barHeight = fabs((amplitude * HEIGHT));
                     vec2 barSize = {5.0f, barHeight};
